@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.enciyo"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -15,13 +15,13 @@ repositories {
 dependencies {
     // HTTP Client
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    
+
     // JSON Processing
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    
+
     // Coroutines for async operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    
+
     testImplementation(kotlin("test"))
 }
 
@@ -40,7 +40,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenKotlin") {
             artifactId = rootProject.name
-            groupId = "tech.s-co"
+            groupId = "com.enciyo"
             from(components["java"])
             versionMapping {
                 usage("java-api") {
@@ -84,10 +84,12 @@ publishing {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/enciyo/tradingviewscreenerkt")
-            
+
             credentials {
-                username = System.getenv("GitHubPackagesUsername") ?: project.findProperty("GitHubPackagesUsername")?.toString() ?: "enciyo"
-                password = System.getenv("GitHubPackagesPassword") ?: project.findProperty("GitHubPackagesPassword")?.toString() ?: ""
+                username = System.getenv("GitHubPackagesUsername") ?: project.findProperty("GitHubPackagesUsername")
+                    ?.toString() ?: "enciyo"
+                password = System.getenv("GitHubPackagesPassword") ?: project.findProperty("GitHubPackagesPassword")
+                    ?.toString() ?: ""
             }
         }
     }
