@@ -1,9 +1,9 @@
 # TradingView Screener Kt
 
 [![GitHub Release](https://img.shields.io/github/v/release/enciyo/tradingviewscreenerkt)](https://github.com/enciyo/tradingviewscreenerkt/releases)
-[![Maven Central](https://img.shields.io/maven-central/v/tech.s-co/TradingViewScreenerKt)](https://central.sonatype.com/artifact/tech.s-co/TradingViewScreenerKt)
+[![GitHub Packages](https://img.shields.io/github/v/release/enciyo/tradingviewscreenerkt?label=GitHub%20Packages)](https://github.com/enciyo/tradingviewscreenerkt/packages)
 [![Kotlin](https://img.shields.io/badge/kotlin-2.2.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 
 A Kotlin library for creating custom stock screeners using TradingView's official API. This is a Kotlin port of the popular Python [tradingview-screener](https://pypi.org/project/tradingview-screener/) package.
 
@@ -27,7 +27,7 @@ A Kotlin library for creating custom stock screeners using TradingView's officia
 
 ```kotlin
 dependencies {
-    implementation("tech.s-co:TradingViewScreenerKt:1.0.0")
+    implementation("com.enciyo:tradingviewscrennerkt:1.0.0")
 }
 ```
 
@@ -35,7 +35,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'tech.s-co:TradingViewScreenerKt:1.0.0'
+    implementation 'com.enciyo:tradingviewscrennerkt:1.0.0'
 }
 ```
 
@@ -43,8 +43,8 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>tech.s-co</groupId>
-    <artifactId>TradingViewScreenerKt</artifactId>
+    <groupId>com.enciyo</groupId>
+    <artifactId>tradingviewscrennerkt</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
@@ -54,7 +54,7 @@ dependencies {
 Here's a simple example to get you started:
 
 ```kotlin
-import com.enciyo.tradingview.*
+import com.enciyo.tradingviewscrennerkt.*
 
 suspend fun main() {
     val query = Query()
@@ -200,6 +200,7 @@ This Kotlin library provides the same powerful features as the original [Python 
 | Coroutines Support | ❌ | ✅ |
 | JVM Integration | ❌ | ✅ |
 | Android Support | ❌ | ✅ |
+| GitHub Packages | ❌ | ✅ |
 
 ## Available Fields
 
@@ -318,9 +319,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 This library is a Kotlin port of the excellent Python [tradingview-screener](https://pypi.org/project/tradingview-screener/) package by [shner-elmo](https://github.com/shner-elmo). We thank the original author for creating such a comprehensive and well-documented library.
 
-## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
