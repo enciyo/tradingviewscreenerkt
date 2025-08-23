@@ -1,7 +1,7 @@
 # TradingView Screener Kt
 
 [![GitHub Release](https://img.shields.io/github/v/release/enciyo/tradingviewscreenerkt)](https://github.com/enciyo/tradingviewscreenerkt/releases)
-[![GitHub Packages](https://img.shields.io/github/v/release/enciyo/tradingviewscreenerkt?label=GitHub%20Packages)](https://github.com/enciyo/tradingviewscreenerkt/packages)
+[![GitHub Packages](https://img.shields.io/badge/github%20packages-v1.0.0-blue.svg)](https://github.com/enciyo/tradingviewscreenerkt/packages)
 [![Kotlin](https://img.shields.io/badge/kotlin-2.2.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 
 
