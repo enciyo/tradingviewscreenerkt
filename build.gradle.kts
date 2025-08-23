@@ -86,6 +86,20 @@ publishing {
             name = "file"
             url = uri(layout.buildDirectory.dir("repo"))
         }
+        
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/enciyo/tradingviewscreenerkt")
+            
+            credentials {
+                username = System.getenv("GitHubPackagesUsername") 
+                    ?: project.findProperty("GitHubPackagesUsername")?.toString() 
+                    ?: "enciyo"
+                password = System.getenv("GitHubPackagesPassword") 
+                    ?: project.findProperty("GitHubPackagesPassword")?.toString() 
+                    ?: ""
+            }
+        }
     }
 }
 
