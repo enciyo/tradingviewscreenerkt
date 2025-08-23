@@ -3,7 +3,6 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
     application
     `maven-publish`
-    signing
 }
 
 group = "com.enciyo"
@@ -83,26 +82,13 @@ publishing {
 
     repositories {
         maven {
-            name = "file"
-            url = uri(layout.buildDirectory.dir("repo"))
-        }
-        
-        maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/enciyo/tradingviewscreenerkt")
             
             credentials {
-                username = System.getenv("GitHubPackagesUsername") 
-                    ?: project.findProperty("GitHubPackagesUsername")?.toString() 
-                    ?: "enciyo"
-                password = System.getenv("GitHubPackagesPassword") 
-                    ?: project.findProperty("GitHubPackagesPassword")?.toString() 
-                    ?: ""
+                username = System.getenv("GitHubPackagesUsername") ?: project.findProperty("GitHubPackagesUsername")?.toString() ?: "enciyo"
+                password = System.getenv("GitHubPackagesPassword") ?: project.findProperty("GitHubPackagesPassword")?.toString() ?: ""
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["mavenKotlin"])
 }
