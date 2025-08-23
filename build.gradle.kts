@@ -39,7 +39,7 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>("mavenKotlin") {
-            artifactId = rootProject.name
+            artifactId = "tradingviewscrennerkt"
             groupId = "com.enciyo"
             from(components["java"])
             versionMapping {
@@ -51,7 +51,7 @@ publishing {
                 }
             }
             pom {
-                name = rootProject.name
+                name = "tradingviewscrennerkt"
                 description = """
                     A Kotlin library for fetching stock data from TradingView.
                     Provides functionalities to retrieve historical and real-time stock information.
