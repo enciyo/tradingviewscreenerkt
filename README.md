@@ -23,39 +23,68 @@ A Kotlin library for creating custom stock screeners using TradingView's officia
 
 ### Gradle (Kotlin DSL)
 
-```
+```kotlin
 repositories {
     mavenLocal()
     mavenCentral()
     google()
-    maven {
-        url = uri("https://maven.pkg.github.com/enciyo/tradingviewscreenerkt")
-    }
+    maven { url = uri("https://jitpack.io") }
 }
-```
 
-```kotlin
 dependencies {
-    implementation("com.enciyo:tradingviewscrennerkt:1.0.0")
+    implementation("com.github.enciyo:tradingviewscreenerkt:v1.0.1")
 }
 ```
 
 ### Gradle (Groovy DSL)
 
 ```groovy
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    implementation 'com.enciyo:tradingviewscrennerkt:1.0.0'
+    implementation 'com.github.enciyo:tradingviewscreenerkt:v1.0.1'
 }
 ```
 
 ### Maven
 
 ```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
 <dependency>
-    <groupId>com.enciyo</groupId>
-    <artifactId>tradingviewscrennerkt</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.github.enciyo</groupId>
+    <artifactId>tradingviewscreenerkt</artifactId>
+    <version>v1.0.1</version>
 </dependency>
+```
+
+### JitPack.io
+
+This library is also available through [JitPack.io](https://jitpack.io/#enciyo/tradingviewscreenerkt):
+
+[![JitPack](https://jitpack.io/v/enciyo/tradingviewscreenerkt.svg)](https://jitpack.io/#enciyo/tradingviewscreenerkt)
+
+You can use any commit hash, branch name, or tag as the version:
+
+```kotlin
+// Latest commit from main branch
+implementation("com.github.enciyo:tradingviewscreenerkt:main-SNAPSHOT")
+
+// Specific commit hash
+implementation("com.github.enciyo:tradingviewscreenerkt:abc1234")
+
+// Specific tag
+implementation("com.github.enciyo:tradingviewscreenerkt:v1.0.1")
 ```
 
 ## Quick Start
@@ -249,7 +278,7 @@ suspend fun efficientScreening() {
         .limit(50)  // Reasonable limit
         .get()
     
-    delay(1000)  // Rate limiting
+    // delay(1000)  // Rate limiting // This line was removed from the original file
 }
 ```
 
