@@ -23,6 +23,17 @@ A Kotlin library for creating custom stock screeners using TradingView's officia
 
 ### Gradle (Kotlin DSL)
 
+```
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven {
+        url = uri("https://maven.pkg.github.com/enciyo/tradingviewscreenerkt")
+    }
+}
+```
+
 ```kotlin
 dependencies {
     implementation("com.enciyo:tradingviewscrennerkt:1.0.0")
