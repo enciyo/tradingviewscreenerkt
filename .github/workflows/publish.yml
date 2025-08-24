@@ -1,22 +1,22 @@
-name: Publish Package to GitHub Packages
+name: Auto Release
 
 on:
   push:
     branches: [ main ]
     tags: [ 'v*' ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write
+      packages: read
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
       
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -32,9 +32,32 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       
-    - name: Publish to GitHub Packages
-      run: ./gradlew publishMavenKotlinPublicationToGitHubPackagesRepository
+    - name: Create Release
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GitHubPackagesUsername: ${{ github.actor }}
-        GitHubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: |
+          ## What's Changed
+          
+          This is an automated release for version ${{ github.ref }}.
+          
+          ### Build Info
+          - Kotlin Version: 2.2.0
+          - JVM Target: 21
+          - Build Date: ${{ github.event.head_commit.timestamp }}
+          
+          ### Installation
+          ```kotlin
+          dependencies {
+              implementation("com.enciyo:tradingviewscrennerkt:${{ github.ref_name }}")
+          }
+          ```
+          
+          ### Repository
+          - Source: ${{ github.repository }}
+          - Release: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref }}
