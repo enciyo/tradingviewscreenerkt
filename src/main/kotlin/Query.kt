@@ -91,12 +91,12 @@ import java.util.concurrent.TimeUnit
  *     )
  *     .orderBy("volume", ascending = false)
  *     .limit(50)
- * 
+ *
  * top50Bullish.getScannerData()
  * ```
  */
 class Query {
-    
+
     companion object {
         private val DEFAULT_RANGE = listOf(0, 50)
         private const val URL = "https://scanner.tradingview.com/{market}/scan"
@@ -115,7 +115,7 @@ class Query {
             "referer" to "https://www.tradingview.com/",
             "accept-language" to "en-US,en;q=0.9,it;q=0.8"
         )
-        
+
         // HTTP Client instance
         private val httpClient = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -123,38 +123,33 @@ class Query {
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
-    
+
     private var query: QueryDict
     private var url: String
-    
+
     init {
         query = QueryDict(
-            markets = listOf("america"),
+            markets = DefaultMarkets.entries,
             symbols = SymbolsDict(
                 query = mapOf("types" to emptyList()),
                 tickers = emptyList()
             ),
             options = mapOf("lang" to "en"),
-            columns = listOf("name", "close", "volume", "market_cap_basic"),
+            columns = DefaultSelects.entries,
             sort = SortByDict("Value.Traded", "desc"),
             range = DEFAULT_RANGE.toMutableList()
         )
         url = "https://scanner.tradingview.com/america/scan"
     }
-    
+
     /**
      * Select specific columns for the query
      */
-    fun select(vararg columns: String): Query {
+    fun select(vararg columns: Select): Query {
         query = query.copy(columns = columns.toList())
         return this
     }
-    
-    fun select(vararg columns: Column): Query {
-        query = query.copy(columns = columns.map { it.name })
-        return this
-    }
-    
+
     /**
      * Filter screener (expressions are joined with the AND operator)
      */
@@ -162,7 +157,7 @@ class Query {
         query = query.copy(filter = expressions.toList())
         return this
     }
-    
+
     /**
      * Filter screener using AND/OR operators (nested expressions also allowed)
      *
@@ -224,7 +219,7 @@ class Query {
         query = query.copy(filter2 = operation.operation)
         return this
     }
-    
+
     /**
      * Applies sorting to the query results based on the specified column.
      *
@@ -250,11 +245,11 @@ class Query {
         query = query.copy(sort = sortDict)
         return this
     }
-    
-    fun orderBy(column: Column, ascending: Boolean = true, nullsFirst: Boolean = false): Query {
-        return orderBy(column.name, ascending, nullsFirst)
+
+    fun orderBy(column: Select, ascending: Boolean = true, nullsFirst: Boolean = false): Query {
+        return orderBy(column.value, ascending, nullsFirst)
     }
-    
+
     /**
      * Set the limit for the number of results returned
      */
@@ -264,7 +259,7 @@ class Query {
         query = query.copy(range = currentRange)
         return this
     }
-    
+
     /**
      * Set the offset for pagination
      */
@@ -274,7 +269,7 @@ class Query {
         query = query.copy(range = currentRange)
         return this
     }
-    
+
     /**
      * This method allows you to select the market/s which you want to query.
      *
@@ -314,13 +309,14 @@ class Query {
      * @param markets one or more markets
      * @return Self
      */
-    fun setMarkets(vararg markets: String): Query {
+    fun setMarkets(vararg markets: Market): Query {
         when (markets.size) {
             1 -> {
                 val market = markets[0]
-                url = URL.replace("{market}", market)
+                url = URL.replace("{market}", market.value)
                 query = query.copy(markets = listOf(market))
             }
+
             else -> { // 0 or > 1
                 url = URL.replace("{market}", "global")
                 query = query.copy(markets = markets.toList())
@@ -328,7 +324,7 @@ class Query {
         }
         return this
     }
-    
+
     /**
      * Set the tickers you wish to receive information on.
      *
@@ -358,7 +354,7 @@ class Query {
         setMarkets() // reset to global
         return this
     }
-    
+
     /**
      * Scan only the equities that are in the given index (or indexes).
      *
@@ -389,7 +385,7 @@ class Query {
         setMarkets()
         return this
     }
-    
+
     /**
      * Set a custom property on the query
      */
@@ -397,8 +393,8 @@ class Query {
         // Note: This would require a more dynamic approach in Kotlin
         // For now, we'll implement specific setters for known properties
         when (key) {
-            "markets" -> if (value is List<*>) query = query.copy(markets = value as List<String>)
-            "columns" -> if (value is List<*>) query = query.copy(columns = value as List<String>)
+            "markets" -> if (value is List<*>) query = query.copy(markets = value as List<Market>)
+            "columns" -> if (value is List<*>) query = query.copy(columns = value as List<Select>)
             "range" -> if (value is List<*>) query = query.copy(range = value as List<Int>)
             "preset" -> if (value is String) query = query.copy(preset = value)
             "ignoreUnknownFields" -> if (value is Boolean) query = query.copy(ignoreUnknownFields = value)
@@ -406,20 +402,20 @@ class Query {
         }
         return this
     }
-    
+
     /**
      * Perform a request and return the raw data from the API (ScreenerDict).
      *
      * This function makes a real HTTP POST request to the TradingView API.
      */
-    fun getScannerDataRaw(): ScreenerDict {
+    private fun getScannerDataRaw(): ScreenerDict {
         try {
             // Ensure range is set
             query = query.copy(range = query.range ?: DEFAULT_RANGE.toMutableList())
-            
+
             // Convert query to JSON
             val jsonBody = buildJsonObject {
-                put("markets", buildJsonArray { query.markets?.forEach { add(it) } })
+                put("markets", buildJsonArray { query.markets?.map { it.value }?.forEach { add(it) } })
                 put("symbols", buildJsonObject {
                     query.symbols?.let { symbols ->
                         symbols.query?.let { query ->
@@ -465,7 +461,7 @@ class Query {
                         }
                     }
                 })
-                put("columns", buildJsonArray { query.columns?.forEach { add(it) } })
+                put("columns", buildJsonArray { query.columns?.map { it.value }?.forEach { add(it) } })
                 query.filter?.let { filter ->
                     put("filter", buildJsonArray {
                         filter.forEach { filterOp ->
@@ -497,11 +493,15 @@ class Query {
                                                 is String -> put("right", right)
                                                 is Number -> put("right", right)
                                                 is Boolean -> put("right", right)
-                                                is List<*> -> put("right", buildJsonArray { right.forEach { add(it.toString()) } })
+                                                is List<*> -> put(
+                                                    "right",
+                                                    buildJsonArray { right.forEach { add(it.toString()) } })
+
                                                 else -> put("right", right?.toString() ?: "")
                                             }
                                         })
                                     })
+
                                     is OperationDict -> add(buildJsonObject {
                                         put("operation", buildJsonObject {
                                             put("operator", operand.operation.operator)
@@ -516,17 +516,22 @@ class Query {
                                                                     is String -> put("right", right)
                                                                     is Number -> put("right", right)
                                                                     is Boolean -> put("right", right)
-                                                                    is List<*> -> put("right", buildJsonArray { right.forEach { add(it.toString()) } })
+                                                                    is List<*> -> put(
+                                                                        "right",
+                                                                        buildJsonArray { right.forEach { add(it.toString()) } })
+
                                                                     else -> put("right", right?.toString() ?: "")
                                                                 }
                                                             })
                                                         })
+
                                                         else -> add(op.toString())
                                                     }
                                                 }
                                             })
                                         })
                                     })
+
                                     else -> add(operand.toString())
                                 }
                             }
@@ -555,7 +560,7 @@ class Query {
                     })
                 }
             }
-            
+
             // Create request
             val requestBody = jsonBody.toString().toRequestBody("application/json".toMediaType())
             val request = Request.Builder()
@@ -567,32 +572,32 @@ class Query {
                     }
                 }
                 .build()
-            
+
             // Execute request
             val response = httpClient.newCall(request).execute()
-            
+
             if (!response.isSuccessful) {
                 throw IOException("HTTP ${response.code}: ${response.message}")
             }
-            
+
             val responseBody = response.body?.string()
                 ?: throw IOException("Empty response body")
-            
+
             // Parse response
             val jsonResponse = Json.parseToJsonElement(responseBody).jsonObject
-            
+
             val totalCount = jsonResponse["totalCount"]?.jsonPrimitive?.int ?: 0
             val dataArray = jsonResponse["data"]?.jsonArray ?: buildJsonArray { }
-            
+
             val data = dataArray.map { rowElement ->
                 val row = rowElement.jsonObject
                 val symbol = row["s"]?.jsonPrimitive?.content ?: ""
                 val dataList = row["d"]?.jsonArray?.map { it.jsonPrimitive.content } ?: emptyList()
                 ScreenerRowDict(symbol, dataList)
             }
-            
+
             return ScreenerDict(totalCount, data)
-            
+
         } catch (e: Exception) {
             println("Error making API request: ${e.message}")
             e.printStackTrace()
@@ -600,23 +605,22 @@ class Query {
             return ScreenerDict(0, emptyList())
         }
     }
-    
+
     /**
      * Perform a request and return the data from the API as a list along with
      * the number of rows/tickers that matched your query.
      *
      * @return a pair consisting of: (total_count, list_of_data)
      */
-    fun getScannerData(): Pair<Int, List<Map<String, Any>>> {
+    fun get(): List<Map<Select, Any>> {
         val rawData = getScannerDataRaw()
-        val totalCount = rawData.totalCount
         val data = rawData.data
-        
+
         val columns = query.columns ?: emptyList()
         val resultList = data.map { row ->
-            val result = mutableMapOf<String, Any>()
-            result["ticker"] = row.s
-            
+            val result = mutableMapOf<Select, Any>()
+            result[DefaultSelects.Ticker] = row.s
+
             // Map the data array to column names
             row.d.forEachIndexed { index, value ->
                 if (index < columns.size) {
@@ -625,10 +629,10 @@ class Query {
             }
             result.toMap()
         }
-        
-        return Pair(totalCount, resultList)
+
+        return resultList
     }
-    
+
     /**
      * Create a copy of this query
      */
@@ -638,37 +642,28 @@ class Query {
         newQuery.url = this.url
         return newQuery
     }
-    
+
     /**
      * Get the current query configuration
      */
     fun getQuery(): QueryDict = query
-    
+
     /**
      * Get the current URL
      */
     fun getUrl(): String = url
-    
-    /**
-     * Get the current markets
-     */
-    fun getMarkets(): List<String>? = query.markets
-    
-    /**
-     * Get the current columns
-     */
-    fun getColumns(): List<String>? = query.columns
-    
+
+
     override fun toString(): String {
         return "Query(query=$query, url='$url')"
     }
-    
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Query) return false
         return query == other.query && url == other.url
     }
-    
+
     override fun hashCode(): Int {
         var result = query.hashCode()
         result = 31 * result + url.hashCode()
@@ -689,7 +684,7 @@ private fun implAndOrChaining(
             else -> expr
         }
     }
-    
+
     return OperationDict(
         OperationComparisonDict(
             operator = operator,

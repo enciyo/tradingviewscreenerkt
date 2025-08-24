@@ -55,10 +55,10 @@ data class OperationDict(
  * Data class representing the main query structure
  */
 data class QueryDict(
-    val markets: List<String>? = null,
+    val markets: List<Market>? = null,
     val symbols: SymbolsDict? = null,
     val options: Map<String, Any>? = null,
-    val columns: List<String>? = null,
+    val columns: List<Select>? = null,
     val filter: List<FilterOperationDict>? = null,
     val filter2: OperationComparisonDict? = null,
     val sort: SortByDict? = null,

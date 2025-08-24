@@ -1,29 +1,27 @@
 package com.enciyo
 
 // Extension functions for operator overloading
-operator fun Column.compareTo(other: Any?): Int {
-    return this.name.compareTo(other.toString())
+operator fun Select.compareTo(other: Any?): Int {
+    return this.value.compareTo(other.toString())
 }
 
-operator fun Column.plus(other: Any?): FilterOperationDict {
-    return FilterOperationDict(this.name, "plus", Column.extractName(other))
+operator fun Select.plus(other: Any?): FilterOperationDict {
+    return FilterOperationDict(this.value, "plus", Select.extractName(other))
 }
 
-operator fun Column.minus(other: Any?): FilterOperationDict {
-    return FilterOperationDict(this.name, "minus", Column.extractName(other))
+operator fun Select.minus(other: Any?): FilterOperationDict {
+    return FilterOperationDict(this.value, "minus", Select.extractName(other))
 }
 
-operator fun Column.times(other: Any?): FilterOperationDict {
-    return FilterOperationDict(this.name, "times", Column.extractName(other))
+operator fun Select.times(other: Any?): FilterOperationDict {
+    return FilterOperationDict(this.value, "times", Select.extractName(other))
 }
 
-operator fun Column.div(other: Any?): FilterOperationDict {
-    return FilterOperationDict(this.name, "div", Column.extractName(other))
+operator fun Select.div(other: Any?): FilterOperationDict {
+    return FilterOperationDict(this.value, "div", Select.extractName(other))
 }
 
-operator fun Column.rem(other: Any?): FilterOperationDict {
-    return FilterOperationDict(this.name, "rem", Column.extractName(other))
+operator fun Select.rem(other: Any?): FilterOperationDict {
+    return FilterOperationDict(this.value, "rem", Select.extractName(other))
 }
 
-// Type alias for convenience
-typealias col = Column
