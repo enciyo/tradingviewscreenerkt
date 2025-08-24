@@ -13,10 +13,9 @@ A Kotlin library for creating custom stock screeners using TradingView's officia
 ### Key Features
 
 - **🎯 Stock Screening**: Query stocks with custom filters and conditions
-- **🌍 Multiple Markets**: Support for US stocks and Turkish markets
+- **🌍 Multiple Markets**: Support for US stocks, Turkish markets, crypto, forex, futures, and more
 - **🔍 Advanced Filtering**: SQL-like syntax with support for comparison operators
 - **🚀 Type Safety**: Full Kotlin type safety and null safety
-- **⚡ Coroutines Support**: Built with Kotlin coroutines for async operations
 - **📦 JVM Integration**: Easy integration with any JVM-based application
 
 ## Installation
@@ -192,6 +191,8 @@ enum class DefaultMarkets(
     Turkey("turkey");      // Turkish Markets
 }
 ```
+
+**Note**: While the default markets include America and Turkey, users can easily add support for additional markets like crypto, forex, futures, bonds, and more by implementing the `Market` interface.
 
 ### Creating Custom Markets
 
